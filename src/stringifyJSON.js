@@ -9,7 +9,6 @@ var stringifyJSON = function(obj) {
 
   var stringified = '';
 
-  // if obj is a primitive value (e.g. a number, null, boolean, string.)
   if (typeof obj === 'number' || obj === null || typeof obj === 'boolean') {
     return stringified + obj;
   }
@@ -17,30 +16,54 @@ var stringifyJSON = function(obj) {
   if (typeof obj === 'string') {
     return '"' + obj + '"';
   }
-  // if obj is an array
+
   if (Array.isArray(obj)) {
     var output = [];
-  // iterate through array  
     for (var i = 0; i < obj.length; i++) {
-    // invoke stringifyJSON on each elt of array
       output.push(stringifyJSON(obj[i]));
     }
-  return '[' + output + ']';
+    return '[' + output + ']';
   } 
 
-  // if obj is a function
-  // return undefined
+  if (typeof obj === 'function' || obj === undefined) {
+    return 'null';
+  }
 
-  // if obj is an object
-  // iterate through each key, value pair
-  // if 
-  // 
-
+  if (typeof obj === 'object') {
+    var keyValue = [];
+    for (var key in obj) {
+      if (typeof obj[key] === 'function' || obj[key] === undefined) {
+        continue; 
+      } else {
+        var stringifiedValues = stringifyJSON(obj[key]);
+        keyValue.push('"'+ key + '"' + ':' + stringifiedValues)
+      }
+    }
+    return '{' + keyValue + '}';    
+  };
 };
 
-console.log(stringifyJSON(9) === JSON.stringify(9));
-console.log(stringifyJSON(null) === JSON.stringify(null));
-console.log(stringifyJSON(true) === JSON.stringify(true));
-console.log(stringifyJSON(false) === JSON.stringify(false));
-console.log(stringifyJSON('Hello world') === JSON.stringify('Hello world'));
-console.log(stringifyJSON([8, 'hi']) === JSON.stringify([8, 'hi']));
+console.log(stringifyJSON({name: 'Tim', name2: 'Hayden', number: 4}) === JSON.stringify({name: 'Tim', name2: 'Hayden', number: 4}));
+console.log(stringifyJSON({name: 'Tim', name2: 'Hayden', number: 4}));
+console.log(JSON.stringify({name: 'Tim', name2: 'Hayden', number: 4}));
+// console.log(stringifyJSON(true) === JSON.stringify(true));
+// console.log(stringifyJSON(false) === JSON.stringify(false));
+// console.log(stringifyJSON('Hello world') === JSON.stringify('Hello world'));
+// console.log(stringifyJSON([8, 'hi']) === JSON.stringify([8, 'hi']));
+
+
+unstringifiableValues = [
+  {
+    'functions': function() {},
+    'undefined': undefined, 
+    'hi': 'hello'
+  }
+];
+
+
+// unstringifiableValues = [function() {}, undefined];
+console.log(stringifyJSON(unstringifiableValues)); // [{}]
+console.log(JSON.stringify(unstringifiableValues))
+ console.log(stringifyJSON(unstringifiableValues) === JSON.stringify(unstringifiableValues));
+
+
