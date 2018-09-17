@@ -44,15 +44,14 @@
 var getElementsByClassName = function(className) {
   var matchingNodes = [];
   var body = document.body;
-  function traverseTree (startNode) {
-      if(startNode.classList && startNode.classList.contains(className)) { 
-        matchingNodes.push(startNode); 
-      };
-    //iterate through all children of startNode
-    for(var i = 0; i < startNode.childNodes.length; i++) {
+  var traverseTree = function (startNode) {
+    if (startNode.classList && startNode.classList.contains(className)) { 
+      matchingNodes.push(startNode); 
+    }
+    for (var i = 0; i < startNode.childNodes.length; i++) {
       traverseTree(startNode.childNodes[i]);
-      };   
-    };
+    }   
+  };
   traverseTree(body);
   return matchingNodes; 
 };
