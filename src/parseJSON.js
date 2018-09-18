@@ -27,17 +27,21 @@ var parseObj = function(json) {
     return obj;
   // we have encounted a key value pairß , {}, "c": "d"}
   } else if (json[1] === '"') {
-    var key = members(json)[0];
-    var property = members(json)[1];
-    obj[key] = property; 
+    var keyValuePairs = members(json).slice(0, -1); // ["a", "b", "c", "d"]
+    // for each elt in keyValuePairs
+    for (var i = 0; i < keyValuePairs.length; i++) {
+      if (i % 2 === 0) {
+        obj[keyValuePairs[i]] = keyValuePairs[i + 1]; 
+      }
+    }
   }
   return obj;
 };
 
-// if there is only one k,v pair, call members only once
+// if there is only one k,v pair, call members only once '{"a": "b", "c": "d"}',
 // if there are multiples, recursively call members
 var members = function(json) {
-  if (json[1] === '}') {
+  if (json.length === 0) {
     return;
   }
 
@@ -54,8 +58,8 @@ var members = function(json) {
 
 
   // TODO return an array containing all the key value pairs
-  return [key, property].concat(members(json.slice()));
-}
+  return [key, property].concat(members(json.slice(closingPropertyQuotationIndex + 2)));
+};
 
 //'[{}]'
 
